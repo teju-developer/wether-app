@@ -136,7 +136,7 @@ To connect OpenWeatherMap API:
 
 ## 💻 How to Run
 
-### 1. Launch Modern GUI Dashboard
+### 1. Launch Modern Desktop GUI Dashboard
 ```bash
 python main.py
 ```
@@ -145,7 +145,18 @@ Or launch through the legacy script:
 python "wether app.py" --gui
 ```
 
-### 2. Run in CLI Terminal Mode
+### 2. Launch Local Web Dashboard
+```bash
+python main.py --web
+```
+Open [http://localhost:5000](http://localhost:5000) in any browser to access the responsive glassmorphism web station.
+
+### 3. Deploy to Vercel (1-Click Cloud Deployment)
+SkyPulse 2.0 exports standard serverless entrypoints (`app`, `application`, `handler`) in `main.py` and `api/index.py` configured via `vercel.json`.
+- Connect your GitHub repository (`wether-app`) to [Vercel](https://vercel.com).
+- Vercel automatically detects the Python runtime and deploys your live web dashboard instantly!
+
+### 4. Run in CLI Terminal Mode
 ```bash
 # Default city (Hubballi)
 python main.py --cli
