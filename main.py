@@ -29,12 +29,10 @@ weather_service = WeatherService()
 
 
 def handle_request(path: str, query_params: dict) -> tuple[int, str, bytes]:
-    """Shared HTTP router serving web dashboard and JSON API."""
-    if path == "/" or path == "/index.html":
-        html = get_html_dashboard()
-        return 200, "text/html; charset=utf-8", html.encode("utf-8")
+    """Shared HTTP router serving web dashboard and JSON API. Never returns 404 for web visits."""
+    clean_path = path.rstrip("/") if path != "/" else "/"
 
-    elif path == "/api/weather":
+    if "weather" in clean_path:
         city = query_params.get("city", ["Hubballi"])[0]
         units = query_params.get("units", ["metric"])[0]
         try:
@@ -51,7 +49,7 @@ def handle_request(path: str, query_params: dict) -> tuple[int, str, bytes]:
             err = {"error": str(e)}
             return 400, "application/json; charset=utf-8", json.dumps(err).encode("utf-8")
 
-    elif path == "/api/compare":
+    elif "compare" in clean_path:
         cities_raw = query_params.get("cities", ["Hubballi,London,Tokyo"])[0]
         units = query_params.get("units", ["metric"])[0]
         city_list = [c.strip() for c in cities_raw.split(",") if c.strip()][:5]
@@ -65,7 +63,9 @@ def handle_request(path: str, query_params: dict) -> tuple[int, str, bytes]:
         resp = {"cities": results}
         return 200, "application/json; charset=utf-8", json.dumps(resp).encode("utf-8")
 
-    return 404, "text/plain; charset=utf-8", b"Not Found"
+    # Default fallback for ANY non-API route: serve the rich Single Page App dashboard
+    html = get_html_dashboard()
+    return 200, "text/html; charset=utf-8", html.encode("utf-8")
 
 
 # 1. WSGI Callable for Vercel, Gunicorn, and standard WSGI servers
@@ -103,7 +103,6 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def log_message(self, format, *args):
-        # Suppress noisy request logging in serverless
         pass
 
 
