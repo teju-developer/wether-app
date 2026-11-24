@@ -1,0 +1,23 @@
+# Environment files & secrets
+.env
+user_config.json
+saved_locations.json
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Distribution & packaging
+build/
+dist/
+*.egg-info/
+
+# Tests & IDE
+.pytest_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+*.swp

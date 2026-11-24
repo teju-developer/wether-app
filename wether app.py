@@ -1,7 +1,24 @@
+"""
+Original Weather App Script - Upgraded for 100% Backwards-Compatibility.
+Preserves Tejashwini's original command-line interface while seamlessly integrating
+with the new SkyPulse Weather engine and supporting GUI launch.
+"""
+
+import sys
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 import requests
+from app.weather_service import WeatherService
 
 
 def fetch_weather(city: str) -> None:
+    """
+    Teju's original working weather function, preserved 100% for backwards-compatibility.
+    Fetches real-time geocoding and weather from Open-Meteo.
+    """
     # Step 1: Convert city name to latitude and longitude using requests.get()
     geo_response = requests.get(
         "https://geocoding-api.open-meteo.com/v1/search",
@@ -42,11 +59,17 @@ def fetch_weather(city: str) -> None:
 
 
 if __name__ == "__main__":
-    city_input = input("Enter city name: ").strip()
-    if city_input:
-        try:
-            fetch_weather(city_input)
-        except requests.exceptions.RequestException as error:
-            print(f"Request failed: {error}")
+    # If user specifies --gui, launch the new modern dashboard!
+    if "--gui" in sys.argv:
+        from app.ui import WeatherDashboardApp
+        app = WeatherDashboardApp()
+        app.mainloop()
     else:
-        print("Please enter a valid city name.")
+        city_input = input("Enter city name: ").strip()
+        if city_input:
+            try:
+                fetch_weather(city_input)
+            except requests.exceptions.RequestException as error:
+                print(f"Request failed: {error}")
+        else:
+            print("Please enter a valid city name.")
